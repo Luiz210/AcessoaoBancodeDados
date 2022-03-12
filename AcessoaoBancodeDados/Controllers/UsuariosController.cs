@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AcessoaoBancodeDados.Entidades;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,15 @@ namespace AcessoaoBancodeDados.Controllers
 {
     public class UsuariosController : Controller
     {
+        public readonly Contexto db;
+        public UsuariosController(Contexto banco)
+        {
+            db = banco;
+        }
         // GET: UsuariosController
         public ActionResult Index()
         {
-            return View();
+            return View(db.USUARIOS.ToList());
         }
 
 
@@ -25,16 +31,11 @@ namespace AcessoaoBancodeDados.Controllers
         // POST: UsuariosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Usuario dadosTela)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            db.USUARIOS.Add(dadosTela);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: UsuariosController/Edit/5
